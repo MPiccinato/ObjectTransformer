@@ -7,69 +7,40 @@
 //
 
 import Foundation
-import SwiftyJSON
 
-// Transformers
-let kAPITransfomerNSDate = "NSDate"
-
-// Error
-enum APITransformerError : ErrorType {
+enum TransformerError : ErrorType {
     case Failed
     case NotImplemented
 }
 
-// Protocol
-protocol APITransformerProtocol {
+protocol TransformerProtocol {
+    associatedtype JSONType
+    associatedtype ObjectType
+
+    func toObject(_: JSONType, to: ObjectType?) throws -> ObjectType
+    func toJSON(_: ObjectType?) throws -> JSONType
     
-    var manager: APITransformerManager {get}
-    
-    init(manager: APITransformerManager)
-    
-    /**
-     Map a value to an object
-     */
-    func map(from: Any?, to: Any?) throws -> AnyObject
-    
-    /**
-     Transform an object into a key/value dictionary to be
-     converted to JSON.
-     */
-    func transform() throws -> [String: AnyObject]
+    static func toObjects<JSONType, ObjectType>(items: Array<JSONType>, transformer: Transformer<JSONType, ObjectType>) -> [ObjectType]
 }
 
-// Base
-class APITransformer : APITransformerProtocol {
-    
-    var manager: APITransformerManager
-    
-    required init(manager: APITransformerManager) {
-        self.manager = manager
-    }
-    
-    func transform() throws -> [String: AnyObject]{
-        throw APITransformerError.NotImplemented
-    }
-    
-    func map(from: Any?, to: Any?) throws -> AnyObject {
-        throw APITransformerError.NotImplemented
+extension TransformerProtocol {
+    static func toObjects<T, U>(items: Array<T>, transformer: Transformer<T, U>) -> [U] {
+        var objects: [U] = []
+        for item in items {
+            if let object = try? transformer.toObject(item, to: nil) {
+                objects.append(object)
+            }
+        }
+        return objects
     }
 }
 
-extension APITransformer {
-    func mapValue(value: Any?, transformer: String) -> AnyObject? {
-        return self.manager.map(value, transformer: transformer)
+class Transformer<T, U>: TransformerProtocol {
+    func toObject(_: T, to: U?) throws -> U {
+        throw TransformerError.NotImplemented
     }
     
-    func mapDate(string: String?, format: String?) -> NSDate? {
-        return self.mapValue(string, transformer: kAPITransfomerNSDate) as? NSDate
-    }
-    
-    func mapArray(array: Array<JSON>?, transformer: String) -> Array<AnyObject> {
-        return self.manager.mapArray(array, transformer: transformer)
-    }
-    
-    func mapDictionary(dict: [String: JSON]?, transformer: String) -> Array<AnyObject> {
-        return self.manager.mapDictionary(dict, transformer: transformer)
+    func toJSON(_: U?) throws -> T {
+        throw TransformerError.NotImplemented
     }
 }
-

@@ -8,32 +8,32 @@
 
 import Foundation
 
-import SwiftDate
-
-class NSDateTransformer : APITransformer {
+struct NSDateTransformer: TransformerProtocol {
     
-    lazy var formatter: NSDateFormatter = {
-        [unowned self] in
-        
-        let formatter = NSDateFormatter()
+    typealias ObjectType = NSDate
+    typealias JSONType = String
+    
+    let formatter: NSDateFormatter
+
+    init() {
+        self.formatter = NSDateFormatter()
         formatter.dateFormat = "yyyyy-MM-dd HH:mm:ss"
         formatter.timeZone = NSTimeZone(name: "UTC")
-       
-        return formatter
-    }()
+    }
     
-    override func map(from: Any?, to: Any?) throws -> AnyObject {
-
-        if let string = from as? String {
-            // Default
-            if let date = self.formatter.dateFromString(string) {
-                return date
-            }
-            else if let date = NSDate.date(fromString: string, format: DateFormat.ISO8601){
-                return date
-            }
+    func toObject(string: JSONType, to: ObjectType?) throws -> ObjectType {
+        if let date = self.formatter.dateFromString(string) {
+            return date
         }
         
-        throw APITransformerError.Failed
+        throw TransformerError.Failed
+    }
+    
+    func toJSON(object: ObjectType?) throws -> JSONType {
+        if let date = object {
+            return self.formatter.stringFromDate(date)
+        }
+        
+        throw TransformerError.Failed
     }
 }
