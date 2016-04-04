@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		6DE0B3721C611B30008DFA1E /* ObjectTransformer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6DE0B3671C611B2F008DFA1E /* ObjectTransformer.framework */; };
-		6DE0B38D1C611B65008DFA1E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DE0B3821C611B65008DFA1E /* Info.plist */; };
 		6DE0B38F1C611B65008DFA1E /* Transformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE0B3841C611B65008DFA1E /* Transformer.swift */; };
 		6DE0B3901C611B65008DFA1E /* NSDateTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6DE0B3861C611B65008DFA1E /* NSDateTransformer.swift */; };
 		6DE0B3911C611B65008DFA1E /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6DE0B3891C611B65008DFA1E /* Info.plist */; };
@@ -223,7 +222,6 @@
 			files = (
 				6DE0B3911C611B65008DFA1E /* Info.plist in Resources */,
 				6DE0B3921C611B65008DFA1E /* UnitTests-Info.plist in Resources */,
-				6DE0B38D1C611B65008DFA1E /* Info.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
