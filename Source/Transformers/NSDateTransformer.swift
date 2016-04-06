@@ -8,28 +8,31 @@
 
 import Foundation
 
-struct NSDateTransformer: TransformerProtocol {
+public class NSDateTransformer: Transformer<NSDate, Any> {
     
-    typealias ObjectType = NSDate
-    typealias JSONType = String
+    public typealias ObjectType = NSDate
+    public typealias JSONType = Any
     
     let formatter: NSDateFormatter
-
-    init() {
+    
+    public override init() {
         self.formatter = NSDateFormatter()
         formatter.dateFormat = "yyyyy-MM-dd HH:mm:ss"
         formatter.timeZone = NSTimeZone(name: "UTC")
     }
     
-    func toObject(string: JSONType, to: ObjectType?) throws -> ObjectType {
-        if let date = self.formatter.dateFromString(string) {
-            return date
+    public override func toObject(from: Any) throws -> NSDate {
+        
+        if let value = from as? String {
+            if let date = self.formatter.dateFromString(value) {
+                return date
+            }
         }
         
         throw TransformerError.Failed
     }
     
-    func toJSON(object: ObjectType?) throws -> JSONType {
+    public override func toJSON(object: NSDate?) throws -> Any {
         if let date = object {
             return self.formatter.stringFromDate(date)
         }

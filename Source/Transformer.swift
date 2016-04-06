@@ -8,26 +8,30 @@
 
 import Foundation
 
-enum TransformerError : ErrorType {
+public enum TransformerError : ErrorType {
     case Failed
     case NotImplemented
 }
 
-protocol TransformerProtocol {
+public protocol TransformerProtocol {
     associatedtype JSONType
     associatedtype ObjectType
-
-    func toObject(_: JSONType, to: ObjectType?) throws -> ObjectType
+    
+    func toObject(_: JSONType) throws -> ObjectType
     func toJSON(_: ObjectType?) throws -> JSONType
     
-    static func toObjects<JSONType, ObjectType>(items: Array<JSONType>, transformer: Transformer<JSONType, ObjectType>) -> [ObjectType]
+    func toObjects(items: [JSONType]?) throws -> [ObjectType]
 }
 
 extension TransformerProtocol {
-    static func toObjects<T, U>(items: Array<T>, transformer: Transformer<T, U>) -> [U] {
-        var objects: [U] = []
-        for item in items {
-            if let object = try? transformer.toObject(item, to: nil) {
+    public func toObjects(items: [JSONType]?) throws -> [ObjectType] {
+        guard items != nil else {
+            throw TransformerError.Failed
+        }
+        
+        var objects: [ObjectType] = []
+        for item in items! {
+            if let object = try? self.toObject(item) {
                 objects.append(object)
             }
         }
@@ -35,12 +39,15 @@ extension TransformerProtocol {
     }
 }
 
-class Transformer<T, U>: TransformerProtocol {
-    func toObject(_: T, to: U?) throws -> U {
+public class Transformer<T, U>: TransformerProtocol {
+    
+    public init() { }
+    
+    public func toObject(_: U) throws -> T {
         throw TransformerError.NotImplemented
     }
     
-    func toJSON(_: U?) throws -> T {
+    public func toJSON(_: T?) throws -> U {
         throw TransformerError.NotImplemented
     }
 }
