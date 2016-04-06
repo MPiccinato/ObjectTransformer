@@ -1,20 +1,20 @@
-# ObjectTransformer
+## ObjectTransformer
 A Swift library for transforming Anything to Anything.
 
-## The Problem
+### The Problem
 
-Many libraries out there require your classes to conform to a protocol or inherit from a sublcass in order to perform object transforms.
+Many libraries out there require your models to conform to a protocol or inherit from a sublcass in order to perform object transforms.
 
 
-## The Solution
+### The Solution
 
 This library. Keep your transformation logic out of your models.
 
-## Features
+### Features
 
 - Decouples Model objects with API objects.
 - Use your own JSON library.
 
-## What it doesn't do
+### What it doesn't do
 
 - Automapping
