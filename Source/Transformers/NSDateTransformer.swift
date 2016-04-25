@@ -8,55 +8,30 @@
 
 import Foundation
 
-public class NSDateTransformer: Transformer<NSDate, Any> {
+public class NSDateTransformer: Transformer<NSDate, String> {
     
     public typealias ObjectType = NSDate
     public typealias JSONType = Any
     
-    let formatter: NSDateFormatter
-    
-    public override init() {
-        self.formatter = NSDateFormatter()
-        formatter.dateFormat = "yyyyy-MM-dd HH:mm:ss"
-        formatter.timeZone = NSTimeZone(name: "UTC")
+    public enum DateFormat: String {
+        case ISO8601Full    = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        case RSS            = "EEE, d MMM yyyy HH:mm:ss ZZZ"
+        case AltRSS         = "d MMM yyyy HH:mm:ss ZZZ"
+        case Extended       = "eee dd-MMM-yyyy GG HH:mm:ss.SSS ZZZ"
     }
-    
-    public override func toObject(from: Any) throws -> NSDate {
-        
-        if let value = from as? String {
-            if let date = self.formatter.dateFromString(value) {
-                return date
-            }
-        }
-        
-        throw TransformerError.Failed
-    }
-    
-    public override func toJSON(object: NSDate?) throws -> Any {
-        if let date = object {
-            return self.formatter.stringFromDate(date)
-        }
-        
-        throw TransformerError.Failed
-    }
-}
-
-public class NSDateCustomFormatTransformer: Transformer<NSDate, Any> {
-    
-    public typealias ObjectType = NSDate
-    public typealias JSONType = Any
     
     let formatter: NSDateFormatter
     
-    public init(format: String) {
+    public init(format: String? = DateFormat.ISO8601Full.rawValue) {
         self.formatter = NSDateFormatter()
         formatter.dateFormat = format
+        //formatter.dateFormat = "yyyyy-MM-dd HH:mm:ss"
         formatter.timeZone = NSTimeZone(name: "UTC")
     }
     
-    public override func toObject(from: Any) throws -> NSDate {
+    public override func toObject(from: String?) throws -> NSDate {
         
-        if let value = from as? String {
+        if let value = from {
             if let date = self.formatter.dateFromString(value) {
                 return date
             }
@@ -65,7 +40,7 @@ public class NSDateCustomFormatTransformer: Transformer<NSDate, Any> {
         throw TransformerError.Failed
     }
     
-    public override func toJSON(object: NSDate?) throws -> Any {
+    public override func toJSON(object: NSDate?) throws -> String {
         if let date = object {
             return self.formatter.stringFromDate(date)
         }
