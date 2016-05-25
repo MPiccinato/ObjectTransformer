@@ -25,15 +25,16 @@ public class NSDateTransformer: Transformer<NSDate, String> {
     public init(format: String? = DateFormat.ISO8601Full.rawValue) {
         self.formatter = NSDateFormatter()
         formatter.dateFormat = format
-        //formatter.dateFormat = "yyyyy-MM-dd HH:mm:ss"
         formatter.timeZone = NSTimeZone(name: "UTC")
     }
     
     public override func toObject(from: String?) throws -> NSDate {
         
         if let value = from {
-            if let date = self.formatter.dateFromString(value) {
-                return date
+            if value.characters.count > 0 {
+                if let date = self.formatter.dateFromString(value) {
+                    return date
+                }
             }
         }
         
