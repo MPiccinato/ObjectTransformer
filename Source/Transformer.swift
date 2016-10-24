@@ -8,9 +8,9 @@
 
 import Foundation
 
-public enum TransformerError : ErrorType {
-    case Failed
-    case NotImplemented
+public enum TransformerError : Error {
+    case failed
+    case notImplemented
 }
 
 public protocol TransformerProtocol {
@@ -20,13 +20,13 @@ public protocol TransformerProtocol {
     func toObject(_: JSONType) throws -> ObjectType
     func toJSON(_: ObjectType?) throws -> JSONType
     
-    func toObjects(items: [JSONType]?) throws -> [ObjectType]
+    func toObjects(_ items: [JSONType]?) throws -> [ObjectType]
 }
 
 extension TransformerProtocol {
-    public func toObjects(items: [JSONType]?) throws -> [ObjectType] {
+    public func toObjects(_ items: [JSONType]?) throws -> [ObjectType] {
         guard items != nil else {
-            throw TransformerError.Failed
+            throw TransformerError.failed
         }
         
         var objects: [ObjectType] = []
@@ -39,15 +39,15 @@ extension TransformerProtocol {
     }
 }
 
-public class Transformer<T, U>: TransformerProtocol {
+open class Transformer<T, U>: TransformerProtocol {
     
     public init() { }
     
-    public func toObject(_: U) throws -> T {
-        throw TransformerError.NotImplemented
+    open func toObject(_: U) throws -> T {
+        throw TransformerError.notImplemented
     }
     
-    public func toJSON(_: T?) throws -> U {
-        throw TransformerError.NotImplemented
+    open func toJSON(_: T?) throws -> U {
+        throw TransformerError.notImplemented
     }
 }
