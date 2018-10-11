@@ -8,9 +8,9 @@
 
 import Foundation
 
-public class NSDateTransformer: Transformer<NSDate, String> {
+open class NSDateTransformer: Transformer<Date, String> {
     
-    public typealias ObjectType = NSDate
+    public typealias ObjectType = Date
     public typealias JSONType = Any
     
     public enum DateFormat: String {
@@ -20,63 +20,63 @@ public class NSDateTransformer: Transformer<NSDate, String> {
         case Extended       = "eee dd-MMM-yyyy GG HH:mm:ss.SSS ZZZ"
     }
     
-    let formatter: NSDateFormatter
+    let formatter: DateFormatter
     
     public init(format: String? = DateFormat.ISO8601Full.rawValue) {
-        self.formatter = NSDateFormatter()
+        self.formatter = DateFormatter()
         formatter.dateFormat = format
-        formatter.timeZone = NSTimeZone(name: "UTC")
+        formatter.timeZone = TimeZone(identifier: "UTC")
     }
     
-    public override func toObject(from: String?) throws -> NSDate {
+    open override func toObject(_ from: String?) throws -> Date {
         
         if let value = from {
             if value.characters.count > 0 {
-                if let date = self.formatter.dateFromString(value) {
+                if let date = self.formatter.date(from: value) {
                     return date
                 }
             }
         }
         
-        throw TransformerError.Failed
+        throw TransformerError.failed
     }
     
-    public override func toJSON(object: NSDate?) throws -> String {
+    open override func toJSON(_ object: Date?) throws -> String {
         if let date = object {
-            return self.formatter.stringFromDate(date)
+            return self.formatter.string(from: date)
         }
         
-        throw TransformerError.Failed
+        throw TransformerError.failed
     }
 }
 
-public class NSDateTransformerCustom: Transformer<NSDate, Any> {
+open class NSDateTransformerCustom: Transformer<Date, Any> {
     
-    public typealias ObjectType = NSDate
+    public typealias ObjectType = Date
     public typealias JSONType = Any
     
-    let formatter: NSDateFormatter
+    let formatter: DateFormatter
     
-    public init(formatter: NSDateFormatter) {
+    public init(formatter: DateFormatter) {
         self.formatter = formatter
     }
     
-    public override func toObject(from: Any) throws -> NSDate {
+    open override func toObject(_ from: Any) throws -> Date {
         
         if let value = from as? String {
-            if let date = self.formatter.dateFromString(value) {
+            if let date = self.formatter.date(from: value) {
                 return date
             }
         }
         
-        throw TransformerError.Failed
+        throw TransformerError.failed
     }
     
-    public override func toJSON(object: NSDate?) throws -> Any {
+    open override func toJSON(_ object: Date?) throws -> Any {
         if let date = object {
-            return self.formatter.stringFromDate(date)
+            return self.formatter.string(from: date)
         }
         
-        throw TransformerError.Failed
+        throw TransformerError.failed
     }
 }
